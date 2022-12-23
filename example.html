@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Targi_109", "label": "Targi_109", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_87", "label": "Targi_87", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_374", "label": "Targi_374", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_851", "label": "Targi_851", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_90", "label": "Targi_90", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_394", "label": "Targi_394", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_91", "label": "Targi_91", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_104", "label": "Targi_104", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_95", "label": "Targi_95", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_102", "label": "Targi_102", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_108", "label": "Targi_108", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_103", "label": "Targi_103", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_105", "label": "Targi_105", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_106", "label": "Targi_106", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_107", "label": "Targi_107", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_352", "label": "Targi_352", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_664", "label": "Targi_664", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_927", "label": "Targi_927", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_932", "label": "Targi_932", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_940", "label": "Targi_940", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_942", "label": "Targi_942", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_928", "label": "Targi_928", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_947", "label": "Targi_947", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_935", "label": "Targi_935", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_431", "label": "Targi_431", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_844", "label": "Targi_844", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_456", "label": "Targi_456", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_97", "label": "Targi_97", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_98", "label": "Targi_98", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_101", "label": "Targi_101", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_99", "label": "Targi_99", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_755", "label": "Targi_755", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_852", "label": "Targi_852", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_941", "label": "Targi_941", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_938", "label": "Targi_938", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_471", "label": "Targi_471", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_163", "label": "Targi_163", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_943", "label": "Targi_943", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_272", "label": "Targi_272", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_807", "label": "Targi_807", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1014", "label": "Targi_1014", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1020", "label": "Targi_1020", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_923", "label": "Targi_923", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_948", "label": "Targi_948", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_760", "label": "Targi_760", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_761", "label": "Targi_761", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_600", "label": "Targi_600", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_441", "label": "Targi_441", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_621", "label": "Targi_621", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_620", "label": "Targi_620", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_51", "label": "Targi_51", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_695", "label": "Targi_695", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1153", "label": "Targi_1153", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_141", "label": "Targi_141", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_443", "label": "Targi_443", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_32", "label": "Targi_32", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_325", "label": "Targi_325", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_322", "label": "Targi_322", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_534", "label": "Targi_534", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1159", "label": "Targi_1159", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1121", "label": "Targi_1121", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1122", "label": "Targi_1122", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_975", "label": "Targi_975", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_974", "label": "Targi_974", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_753", "label": "Targi_753", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_754", "label": "Targi_754", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_39", "label": "Targi_39", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_568", "label": "Targi_568", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_422", "label": "Targi_422", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_43", "label": "Targi_43", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_42", "label": "Targi_42", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_613", "label": "Targi_613", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_54", "label": "Targi_54", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_421", "label": "Targi_421", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_469", "label": "Targi_469", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_38", "label": "Targi_38", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_343", "label": "Targi_343", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_40", "label": "Targi_40", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_612", "label": "Targi_612", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_55", "label": "Targi_55", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_41", "label": "Targi_41", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_516", "label": "Targi_516", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_195", "label": "Targi_195", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_599", "label": "Targi_599", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_319", "label": "Targi_319", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_615", "label": "Targi_615", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_592", "label": "Targi_592", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_100", "label": "Targi_100", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_527", "label": "Targi_527", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_526", "label": "Targi_526", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_531", "label": "Targi_531", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_533", "label": "Targi_533", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_532", "label": "Targi_532", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_686", "label": "Targi_686", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1066", "label": "Targi_1066", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_687", "label": "Targi_687", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_88", "label": "Targi_88", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1049", "label": "Targi_1049", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_89", "label": "Targi_89", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_138", "label": "Targi_138", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_137", "label": "Targi_137", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_60", "label": "Targi_60", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_510", "label": "Targi_510", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_506", "label": "Targi_506", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_505", "label": "Targi_505", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_507", "label": "Targi_507", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_508", "label": "Targi_508", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1097", "label": "Targi_1097", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_547", "label": "Targi_547", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_512", "label": "Targi_512", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_511", "label": "Targi_511", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_715", "label": "Targi_715", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_951", "label": "Targi_951", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_162", "label": "Targi_162", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_276", "label": "Targi_276", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1044", "label": "Targi_1044", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1047", "label": "Targi_1047", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1046", "label": "Targi_1046", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1048", "label": "Targi_1048", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1045", "label": "Targi_1045", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_287", "label": "Targi_287", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_288", "label": "Targi_288", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_647", "label": "Targi_647", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_648", "label": "Targi_648", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_886", "label": "Targi_886", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_618", "label": "Targi_618", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_117", "label": "Targi_117", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_658", "label": "Targi_658", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_654", "label": "Targi_654", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_656", "label": "Targi_656", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_655", "label": "Targi_655", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_653", "label": "Targi_653", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_601", "label": "Targi_601", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1117", "label": "Targi_1117", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_735", "label": "Targi_735", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_293", "label": "Targi_293", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_982", "label": "Targi_982", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_292", "label": "Targi_292", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_953", "label": "Targi_953", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_960", "label": "Targi_960", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_955", "label": "Targi_955", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_959", "label": "Targi_959", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_722", "label": "Targi_722", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_430", "label": "Targi_430", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_429", "label": "Targi_429", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_428", "label": "Targi_428", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_427", "label": "Targi_427", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1163", "label": "Targi_1163", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1165", "label": "Targi_1165", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1164", "label": "Targi_1164", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1166", "label": "Targi_1166", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1167", "label": "Targi_1167", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1168", "label": "Targi_1168", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_92", "label": "Targi_92", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1057", "label": "Targi_1057", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_522", "label": "Targi_522", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1004", "label": "Targi_1004", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_435", "label": "Targi_435", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_345", "label": "Targi_345", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_949", "label": "Targi_949", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_950", "label": "Targi_950", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_884", "label": "Targi_884", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_885", "label": "Targi_885", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_734", "label": "Targi_734", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1098", "label": "Targi_1098", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_301", "label": "Targi_301", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_260", "label": "Targi_260", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_356", "label": "Targi_356", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_357", "label": "Targi_357", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_433", "label": "Targi_433", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_405", "label": "Targi_405", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_326", "label": "Targi_326", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1080", "label": "Targi_1080", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_730", "label": "Targi_730", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_440", "label": "Targi_440", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_840", "label": "Targi_840", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_839", "label": "Targi_839", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_841", "label": "Targi_841", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_538", "label": "Targi_538", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_539", "label": "Targi_539", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_854", "label": "Targi_854", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1113", "label": "Targi_1113", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_577", "label": "Targi_577", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_578", "label": "Targi_578", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_796", "label": "Targi_796", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_130", "label": "Targi_130", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_736", "label": "Targi_736", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_710", "label": "Targi_710", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_605", "label": "Targi_605", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_799", "label": "Targi_799", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_798", "label": "Targi_798", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_784", "label": "Targi_784", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_614", "label": "Targi_614", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_824", "label": "Targi_824", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_825", "label": "Targi_825", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_871", "label": "Targi_871", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_872", "label": "Targi_872", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_1135", "label": "Targi_1135", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_384", "label": "Targi_384", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_820", "label": "Targi_820", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_821", "label": "Targi_821", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_822", "label": "Targi_822", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_490", "label": "Targi_490", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_489", "label": "Targi_489", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_486", "label": "Targi_486", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_487", "label": "Targi_487", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_666", "label": "Targi_666", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_665", "label": "Targi_665", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_484", "label": "Targi_484", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_485", "label": "Targi_485", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_270", "label": "Targi_270", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_289", "label": "Targi_289", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Targi_299", "label": "Targi_299", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Targi_109", "to": "Targi_87", "width": 0.95}, {"from": "Targi_109", "to": "Targi_374", "width": 0.099}, {"from": "Targi_109", "to": "Targi_851", "width": 1.0}, {"from": "Targi_109", "to": "Targi_90", "width": 1.0}, {"from": "Targi_109", "to": "Targi_394", "width": 1.0}, {"from": "Targi_87", "to": "Targi_91", "width": 0.042199999999999994}, {"from": "Targi_87", "to": "Targi_104", "width": 1.0}, {"from": "Targi_87", "to": "Targi_95", "width": 0.9578}, {"from": "Targi_87", "to": "Targi_102", "width": 0.6940000000000001}, {"from": "Targi_91", "to": "Targi_102", "width": 0.20600000000000002}, {"from": "Targi_91", "to": "Targi_108", "width": 0.7854000000000001}, {"from": "Targi_91", "to": "Targi_103", "width": 1.0}, {"from": "Targi_104", "to": "Targi_105", "width": 1.0}, {"from": "Targi_104", "to": "Targi_106", "width": 1.0}, {"from": "Targi_104", "to": "Targi_107", "width": 1.0}, {"from": "Targi_104", "to": "Targi_352", "width": 0.25}, {"from": "Targi_105", "to": "Targi_664", "width": 1.0}, {"from": "Targi_927", "to": "Targi_932", "width": 1.0}, {"from": "Targi_927", "to": "Targi_940", "width": 1.0}, {"from": "Targi_927", "to": "Targi_942", "width": 1.0}, {"from": "Targi_927", "to": "Targi_928", "width": 0.6718999999999999}, {"from": "Targi_927", "to": "Targi_947", "width": 1.0}, {"from": "Targi_927", "to": "Targi_935", "width": 1.0}, {"from": "Targi_927", "to": "Targi_352", "width": 0.2481}, {"from": "Targi_932", "to": "Targi_431", "width": 0.28}, {"from": "Targi_932", "to": "Targi_844", "width": 0.5}, {"from": "Targi_932", "to": "Targi_456", "width": 0.5}, {"from": "Targi_374", "to": "Targi_352", "width": 0.25}, {"from": "Targi_95", "to": "Targi_97", "width": 1.0}, {"from": "Targi_95", "to": "Targi_98", "width": 1.0}, {"from": "Targi_95", "to": "Targi_101", "width": 0.3335}, {"from": "Targi_95", "to": "Targi_99", "width": 1.0}, {"from": "Targi_97", "to": "Targi_101", "width": 0.3332}, {"from": "Targi_97", "to": "Targi_755", "width": 0.8931999999999999}, {"from": "Targi_851", "to": "Targi_852", "width": 1.0}, {"from": "Targi_940", "to": "Targi_941", "width": 1.0}, {"from": "Targi_940", "to": "Targi_938", "width": 1.0}, {"from": "Targi_102", "to": "Targi_471", "width": 0.044000000000000004}, {"from": "Targi_471", "to": "Targi_163", "width": 0.27}, {"from": "Targi_942", "to": "Targi_943", "width": 1.0}, {"from": "Targi_272", "to": "Targi_807", "width": 0.425}, {"from": "Targi_98", "to": "Targi_101", "width": 0.3332}, {"from": "Targi_1014", "to": "Targi_1020", "width": 0.0001}, {"from": "Targi_1014", "to": "Targi_923", "width": 0.9998999999999999}, {"from": "Targi_947", "to": "Targi_948", "width": 1.0}, {"from": "Targi_760", "to": "Targi_431", "width": 0.28}, {"from": "Targi_760", "to": "Targi_761", "width": 1.0}, {"from": "Targi_431", "to": "Targi_600", "width": 0.16}, {"from": "Targi_600", "to": "Targi_441", "width": 0.13}, {"from": "Targi_600", "to": "Targi_621", "width": 1.0}, {"from": "Targi_600", "to": "Targi_620", "width": 1.0}, {"from": "Targi_600", "to": "Targi_51", "width": 0.9998999999999999}, {"from": "Targi_695", "to": "Targi_1153", "width": 1.0}, {"from": "Targi_141", "to": "Targi_443", "width": 0.5}, {"from": "Targi_32", "to": "Targi_325", "width": 1.0}, {"from": "Targi_32", "to": "Targi_322", "width": 1.0}, {"from": "Targi_32", "to": "Targi_534", "width": 1.0}, {"from": "Targi_32", "to": "Targi_1159", "width": 0.16699999999999998}, {"from": "Targi_32", "to": "Targi_1121", "width": 0.16699999999999998}, {"from": "Targi_32", "to": "Targi_1122", "width": 0.16699999999999998}, {"from": "Targi_32", "to": "Targi_975", "width": 0.16699999999999998}, {"from": "Targi_32", "to": "Targi_974", "width": 0.16699999999999998}, {"from": "Targi_753", "to": "Targi_754", "width": 1.0}, {"from": "Targi_39", "to": "Targi_568", "width": 1.0}, {"from": "Targi_39", "to": "Targi_422", "width": 1.0}, {"from": "Targi_39", "to": "Targi_43", "width": 1.0}, {"from": "Targi_39", "to": "Targi_42", "width": 1.0}, {"from": "Targi_39", "to": "Targi_613", "width": 1.0}, {"from": "Targi_39", "to": "Targi_54", "width": 1.0}, {"from": "Targi_39", "to": "Targi_421", "width": 1.0}, {"from": "Targi_39", "to": "Targi_469", "width": 1.0}, {"from": "Targi_39", "to": "Targi_38", "width": 1.0}, {"from": "Targi_39", "to": "Targi_343", "width": 1.0}, {"from": "Targi_39", "to": "Targi_40", "width": 1.0}, {"from": "Targi_39", "to": "Targi_612", "width": 1.0}, {"from": "Targi_39", "to": "Targi_55", "width": 1.0}, {"from": "Targi_39", "to": "Targi_41", "width": 1.0}, {"from": "Targi_516", "to": "Targi_195", "width": 1.0}, {"from": "Targi_621", "to": "Targi_599", "width": 1.0}, {"from": "Targi_319", "to": "Targi_615", "width": 1.0}, {"from": "Targi_592", "to": "Targi_100", "width": 0.4}, {"from": "Targi_527", "to": "Targi_526", "width": 1.0}, {"from": "Targi_534", "to": "Targi_531", "width": 1.0}, {"from": "Targi_534", "to": "Targi_533", "width": 1.0}, {"from": "Targi_534", "to": "Targi_532", "width": 1.0}, {"from": "Targi_352", "to": "Targi_686", "width": 0.2481}, {"from": "Targi_686", "to": "Targi_1066", "width": 1.0}, {"from": "Targi_686", "to": "Targi_687", "width": 1.0}, {"from": "Targi_88", "to": "Targi_1049", "width": 1.0}, {"from": "Targi_88", "to": "Targi_89", "width": 1.0}, {"from": "Targi_138", "to": "Targi_137", "width": 1.0}, {"from": "Targi_613", "to": "Targi_60", "width": 1.0}, {"from": "Targi_510", "to": "Targi_506", "width": 1.0}, {"from": "Targi_510", "to": "Targi_505", "width": 0.5}, {"from": "Targi_510", "to": "Targi_507", "width": 1.0}, {"from": "Targi_505", "to": "Targi_508", "width": 1.0}, {"from": "Targi_1097", "to": "Targi_547", "width": 0.4781}, {"from": "Targi_547", "to": "Targi_512", "width": 0.95}, {"from": "Targi_547", "to": "Targi_511", "width": 1.0}, {"from": "Targi_715", "to": "Targi_951", "width": 0.9997}, {"from": "Targi_163", "to": "Targi_162", "width": 1.0}, {"from": "Targi_163", "to": "Targi_276", "width": 0.3333}, {"from": "Targi_1044", "to": "Targi_1047", "width": 1.0}, {"from": "Targi_1044", "to": "Targi_1046", "width": 1.0}, {"from": "Targi_1044", "to": "Targi_1048", "width": 1.0}, {"from": "Targi_1044", "to": "Targi_1045", "width": 1.0}, {"from": "Targi_287", "to": "Targi_288", "width": 1.0}, {"from": "Targi_647", "to": "Targi_648", "width": 1.0}, {"from": "Targi_886", "to": "Targi_618", "width": 0.9993000000000001}, {"from": "Targi_886", "to": "Targi_117", "width": 0.9899}, {"from": "Targi_658", "to": "Targi_654", "width": 1.0}, {"from": "Targi_658", "to": "Targi_656", "width": 1.0}, {"from": "Targi_658", "to": "Targi_655", "width": 1.0}, {"from": "Targi_658", "to": "Targi_653", "width": 1.0}, {"from": "Targi_601", "to": "Targi_1117", "width": 0.5}, {"from": "Targi_1117", "to": "Targi_735", "width": 0.5}, {"from": "Targi_293", "to": "Targi_982", "width": 1.0}, {"from": "Targi_293", "to": "Targi_292", "width": 1.0}, {"from": "Targi_953", "to": "Targi_960", "width": 1.0}, {"from": "Targi_953", "to": "Targi_955", "width": 1.0}, {"from": "Targi_953", "to": "Targi_959", "width": 1.0}, {"from": "Targi_722", "to": "Targi_430", "width": 1.0}, {"from": "Targi_722", "to": "Targi_429", "width": 1.0}, {"from": "Targi_722", "to": "Targi_428", "width": 1.0}, {"from": "Targi_722", "to": "Targi_427", "width": 1.0}, {"from": "Targi_1163", "to": "Targi_1165", "width": 1.0}, {"from": "Targi_1163", "to": "Targi_1164", "width": 1.0}, {"from": "Targi_1163", "to": "Targi_1166", "width": 1.0}, {"from": "Targi_1163", "to": "Targi_1167", "width": 1.0}, {"from": "Targi_1163", "to": "Targi_1168", "width": 1.0}, {"from": "Targi_92", "to": "Targi_1057", "width": 1.0}, {"from": "Targi_522", "to": "Targi_1004", "width": 0.8332999999999999}, {"from": "Targi_435", "to": "Targi_345", "width": 0.9667}, {"from": "Targi_949", "to": "Targi_950", "width": 1.0}, {"from": "Targi_884", "to": "Targi_885", "width": 1.0}, {"from": "Targi_734", "to": "Targi_1098", "width": 1.0}, {"from": "Targi_301", "to": "Targi_260", "width": 1.0}, {"from": "Targi_356", "to": "Targi_357", "width": 0.6999}, {"from": "Targi_433", "to": "Targi_405", "width": 1.0}, {"from": "Targi_326", "to": "Targi_1080", "width": 1.0}, {"from": "Targi_730", "to": "Targi_440", "width": 1.0}, {"from": "Targi_840", "to": "Targi_839", "width": 1.0}, {"from": "Targi_840", "to": "Targi_841", "width": 1.0}, {"from": "Targi_538", "to": "Targi_539", "width": 1.0}, {"from": "Targi_854", "to": "Targi_1113", "width": 0.5}, {"from": "Targi_577", "to": "Targi_578", "width": 1.0}, {"from": "Targi_796", "to": "Targi_130", "width": 1.0}, {"from": "Targi_736", "to": "Targi_710", "width": 1.0}, {"from": "Targi_736", "to": "Targi_605", "width": 1.0}, {"from": "Targi_799", "to": "Targi_798", "width": 1.0}, {"from": "Targi_784", "to": "Targi_614", "width": 0.40159999999999996}, {"from": "Targi_824", "to": "Targi_825", "width": 1.0}, {"from": "Targi_871", "to": "Targi_872", "width": 1.0}, {"from": "Targi_1135", "to": "Targi_384", "width": 1.0}, {"from": "Targi_820", "to": "Targi_821", "width": 1.0}, {"from": "Targi_820", "to": "Targi_822", "width": 1.0}, {"from": "Targi_490", "to": "Targi_489", "width": 0.0001}, {"from": "Targi_486", "to": "Targi_487", "width": 1.0}, {"from": "Targi_666", "to": "Targi_665", "width": 1.0}, {"from": "Targi_484", "to": "Targi_485", "width": 0.0001}, {"from": "Targi_270", "to": "Targi_289", "width": 1.0}, {"from": "Targi_270", "to": "Targi_299", "width": 1.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
